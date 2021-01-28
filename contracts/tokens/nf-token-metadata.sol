@@ -6,6 +6,7 @@ import "./erc721-metadata.sol";
 
 /**
  * @dev Optional metadata implementation for ERC-721 non-fungible token standard.
+ * @dev Simplifed URI implementation.
  */
 contract NFTokenMetadata is
   NFToken,
@@ -23,9 +24,9 @@ contract NFTokenMetadata is
   string internal nftSymbol;
 
   /**
-   * @dev Mapping from NFT ID to metadata uri.
+   * @dev String base uri
    */
-  mapping (uint256 => string) internal idToUri;
+  string internal baseURI;
 
   /**
    * @dev Contract constructor.
@@ -76,7 +77,7 @@ contract NFTokenMetadata is
     validNFToken(_tokenId)
     returns (string memory)
   {
-    return idToUri[_tokenId];
+    return string(abi.encodePacked(baseURI, _tokenId));
   }
 
   /**
@@ -95,29 +96,6 @@ contract NFTokenMetadata is
     virtual
   {
     super._burn(_tokenId);
-
-    if (bytes(idToUri[_tokenId]).length != 0)
-    {
-      delete idToUri[_tokenId];
-    }
-  }
-
-  /**
-   * @dev Set a distinct URI (RFC 3986) for a given NFT ID.
-   * @notice This is an internal function which should be called from user-implemented external
-   * function. Its purpose is to show and properly initialize data structures when using this
-   * implementation.
-   * @param _tokenId Id for which we want URI.
-   * @param _uri String representing RFC 3986 URI.
-   */
-  function _setTokenUri(
-    uint256 _tokenId,
-    string memory _uri
-  )
-    internal
-    validNFToken(_tokenId)
-  {
-    idToUri[_tokenId] = _uri;
   }
 
 }
